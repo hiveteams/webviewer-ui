@@ -141,13 +141,13 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsRepl
   const header = useMemo(() => (
     <React.Fragment>
       {!isReply &&
-      <div className="type-icon-container">
-        {numberOfReplies > 0 &&
-        <div className="num-replies-container">
-          <div className="num-replies">{formatNumberOfReplies}</div>
-        </div>}
-        <Icon className="type-icon" glyph={icon} color={color} />
-      </div>
+        <div className="type-icon-container">
+          {numberOfReplies > 0 &&
+          <div className="num-replies-container">
+            <div className="num-replies">{formatNumberOfReplies}</div>
+          </div>}
+          <Icon className="type-icon" glyph={icon} color={color} />
+        </div>
       }
       <div className="author-and-date">
         <div className="author-and-overflow">
@@ -159,17 +159,17 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsRepl
           </div>
           <div className="state-and-overflow">
             {!isStateDisabled && !isReply &&
-            <NoteState
-              annotation={annotation}
-              isSelected={isSelected}
-            />
+              <NoteState
+                annotation={annotation}
+                isSelected={isSelected}
+              />
             }
             {!isEditing && isSelected &&
-            <NotePopup
-              noteIndex={noteIndex}
-              annotation={annotation}
-              setIsEditing={setIsEditing}
-            />}
+              <NotePopup
+                noteIndex={noteIndex}
+                annotation={annotation}
+                setIsEditing={setIsEditing}
+              />}
           </div>
         </div>
         {((isEditing && isSelected) || isEditing && textAreaValue?.length > 0) ? (
@@ -206,12 +206,12 @@ export default NoteContent;
 
 // a component that contains the content textarea, the save button and the cancel button
 const ContentArea = ({
-                       annotation,
-                       noteIndex,
-                       setIsEditing,
-                       textAreaValue,
-                       onTextAreaValueChange,
-                     }) => {
+  annotation,
+  noteIndex,
+  setIsEditing,
+  textAreaValue,
+  onTextAreaValueChange,
+}) => {
   const [isMentionEnabled] = useSelector(state => [
     selectors.getIsMentionEnabled(state),
   ]);
