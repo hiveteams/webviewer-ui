@@ -143,9 +143,9 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsRepl
       {!isReply &&
         <div className="type-icon-container">
           {numberOfReplies > 0 &&
-          <div className="num-replies-container">
-            <div className="num-replies">{formatNumberOfReplies}</div>
-          </div>}
+            <div className="num-replies-container">
+              <div className="num-replies">{formatNumberOfReplies}</div>
+            </div>}
           <Icon className="type-icon" glyph={icon} color={color} />
         </div>
       }
