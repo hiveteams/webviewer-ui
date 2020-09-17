@@ -64,7 +64,7 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsRepl
       dispatch(actions.finishNoteEditing());
     }
 
-    setIsReplying(textAreaValue?.length > 0)
+    setIsReplying(textAreaValue?.length > 0);
 
     resize();
   }, [isEditing, textAreaValue]);
@@ -84,12 +84,10 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsRepl
   }, [isContentEditable, isNoteEditingTriggeredByAnnotationPopup, isSelected, textAreaValue, setIsEditing]);
 
   useEffect(() => {
-    console.log('isContentEditable:', isContentEditable);
     if (textAreaValue?.length > 0 && isContentEditable) {
-      console.log('SUKA');
       setIsEditing(true, noteIndex);
     }
-  }, [textAreaValue, isContentEditable, setIsEditing])
+  }, [textAreaValue, isContentEditable, setIsEditing]);
 
   const renderAuthorName = useCallback(
     annotation => {

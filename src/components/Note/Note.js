@@ -102,7 +102,7 @@ const Note = ({ annotation }) => {
   const replies = annotation
     .getReplies()
     .sort((a, b) => a['DateCreated'] - b['DateCreated']);
-  const showReplyArea = !Object.values(isEditingMap).some(val => val);
+  const showReplyArea = !Object.values(isEditingMap).some(val => val) || isReplying;
 
   const handleNoteKeydown = e => {
     // Click if enter or space is pressed and is current target.
