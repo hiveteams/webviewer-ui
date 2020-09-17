@@ -33,7 +33,7 @@ const propTypes = {
   annotation: PropTypes.object.isRequired,
 };
 
-const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
+const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsReplying  }) => {
   const [
     noteDateFormat,
     iconColor,
@@ -64,21 +64,32 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
       dispatch(actions.finishNoteEditing());
     }
 
+    setIsReplying(textAreaValue?.length > 0)
+
     resize();
-  }, [isEditing]);
+  }, [isEditing, textAreaValue]);
 
   useEffect(() => {
     // when the comment button in the annotation popup is clicked,
     // this effect will run and we set isEditing to true so that
     // the textarea will be rendered and focused after it is mounted
     if (
-      isNoteEditingTriggeredByAnnotationPopup &&
-      isSelected &&
-      isContentEditable
+      (isNoteEditingTriggeredByAnnotationPopup &&
+        isSelected &&
+        isContentEditable)
+      || (isContentEditable && textAreaValue?.length > 0)
     ) {
       setIsEditing(true, noteIndex);
     }
-  }, [isContentEditable, isNoteEditingTriggeredByAnnotationPopup, isSelected, setIsEditing]);
+  }, [isContentEditable, isNoteEditingTriggeredByAnnotationPopup, isSelected, textAreaValue, setIsEditing]);
+
+  useEffect(() => {
+    console.log('isContentEditable:', isContentEditable);
+    if (textAreaValue?.length > 0 && isContentEditable) {
+      console.log('SUKA');
+      setIsEditing(true, noteIndex);
+    }
+  }, [textAreaValue, isContentEditable, setIsEditing])
 
   const renderAuthorName = useCallback(
     annotation => {
@@ -132,13 +143,13 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
   const header = useMemo(() => (
     <React.Fragment>
       {!isReply &&
-        <div className="type-icon-container">
-          {numberOfReplies > 0 &&
-            <div className="num-replies-container">
-              <div className="num-replies">{formatNumberOfReplies}</div>
-            </div>}
-          <Icon className="type-icon" glyph={icon} color={color} />
-        </div>
+      <div className="type-icon-container">
+        {numberOfReplies > 0 &&
+        <div className="num-replies-container">
+          <div className="num-replies">{formatNumberOfReplies}</div>
+        </div>}
+        <Icon className="type-icon" glyph={icon} color={color} />
+      </div>
       }
       <div className="author-and-date">
         <div className="author-and-overflow">
@@ -150,20 +161,20 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
           </div>
           <div className="state-and-overflow">
             {!isStateDisabled && !isReply &&
-              <NoteState
-                annotation={annotation}
-                isSelected={isSelected}
-              />
+            <NoteState
+              annotation={annotation}
+              isSelected={isSelected}
+            />
             }
             {!isEditing && isSelected &&
-              <NotePopup
-                noteIndex={noteIndex}
-                annotation={annotation}
-                setIsEditing={setIsEditing}
-              />}
+            <NotePopup
+              noteIndex={noteIndex}
+              annotation={annotation}
+              setIsEditing={setIsEditing}
+            />}
           </div>
         </div>
-        {isEditing && isSelected ? (
+        {((isEditing && isSelected) || isEditing && textAreaValue?.length > 0) ? (
           <ContentArea
             textAreaValue={textAreaValue}
             onTextAreaValueChange={setTextAreaValue}
@@ -197,12 +208,12 @@ export default NoteContent;
 
 // a component that contains the content textarea, the save button and the cancel button
 const ContentArea = ({
-  annotation,
-  noteIndex,
-  setIsEditing,
-  textAreaValue,
-  onTextAreaValueChange,
-}) => {
+                       annotation,
+                       noteIndex,
+                       setIsEditing,
+                       textAreaValue,
+                       onTextAreaValueChange,
+                     }) => {
   const [isMentionEnabled] = useSelector(state => [
     selectors.getIsMentionEnabled(state),
   ]);

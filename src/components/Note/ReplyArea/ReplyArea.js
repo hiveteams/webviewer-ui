@@ -17,7 +17,7 @@ const propTypes = {
 };
 
 // a component that contains the reply textarea, the reply button and the cancel button
-const ReplyArea = ({ annotation }) => {
+const ReplyArea = ({ annotation, setIsReplying }) => {
   const [
     isReadOnly,
     isReplyDisabled,
@@ -45,6 +45,8 @@ const ReplyArea = ({ annotation }) => {
     if (!isFocused) {
       dispatch(actions.finishNoteEditing());
     }
+
+    setIsReplying(textareaRef?.current?.value?.length > 0);
 
     resize();
   }, [isFocused]);

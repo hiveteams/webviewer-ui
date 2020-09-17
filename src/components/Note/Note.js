@@ -23,6 +23,7 @@ const Note = ({ annotation }) => {
   const containerRef = useRef();
   const containerHeightRef = useRef();
   const [isEditingMap, setIsEditingMap] = useState({});
+  const [isReplying, setIsReplying] = useState(false);
   const ids = useRef([]);
 
   const [noteTransformFunction] = useSelector(
@@ -101,7 +102,6 @@ const Note = ({ annotation }) => {
   const replies = annotation
     .getReplies()
     .sort((a, b) => a['DateCreated'] - b['DateCreated']);
-
   const showReplyArea = !Object.values(isEditingMap).some(val => val);
 
   const handleNoteKeydown = e => {
@@ -138,8 +138,9 @@ const Note = ({ annotation }) => {
         isSelected={isSelected}
         setIsEditing={setIsEditing}
         isEditing={isEditingMap[0]}
+        setIsReplying={setIsReplying}
       />
-      {isSelected && (
+      {(isSelected || isReplying) && (
         <React.Fragment>
           {replies.length > 0 && <div className="divider" />}
           <div className={repliesClass}>
@@ -150,9 +151,10 @@ const Note = ({ annotation }) => {
                 annotation={reply}
                 setIsEditing={setIsEditing}
                 isEditing={isEditingMap[i + 1]}
+                setIsReplying={setIsReplying}
               />
             ))}
-            {showReplyArea && <ReplyArea annotation={annotation} />}
+            {showReplyArea && <ReplyArea annotation={annotation} setIsReplying={setIsReplying} />}
           </div>
         </React.Fragment>
       )}
