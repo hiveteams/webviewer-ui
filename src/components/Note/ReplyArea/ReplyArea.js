@@ -14,10 +14,11 @@ import selectors from 'selectors';
 
 const propTypes = {
   annotation: PropTypes.object.isRequired,
+  setIsReplying: PropTypes.func,
 };
 
 // a component that contains the reply textarea, the reply button and the cancel button
-const ReplyArea = ({ annotation }) => {
+const ReplyArea = ({ annotation, setIsReplying }) => {
   const [
     isReadOnly,
     isReplyDisabled,
@@ -46,6 +47,8 @@ const ReplyArea = ({ annotation }) => {
       dispatch(actions.finishNoteEditing());
     }
 
+    setIsReplying(textareaRef?.current?.value?.length > 0);
+
     resize();
   }, [isFocused]);
 
@@ -62,6 +65,10 @@ const ReplyArea = ({ annotation }) => {
       textareaRef.current?.focus();
     }
   }, [isContentEditable, isNoteEditingTriggeredByAnnotationPopup, isSelected]);
+
+  useEffect(() => {
+    setIsReplying(value?.length > 0);
+  }, [value]);
 
   const postReply = e => {
     // prevent the textarea from blurring out
@@ -84,7 +91,7 @@ const ReplyArea = ({ annotation }) => {
     isReadOnly ||
     isReplyDisabled ||
     isReplyDisabledForAnnotation ||
-    (isNoteEditingTriggeredByAnnotationPopup && isContentEditable);
+    (isNoteEditingTriggeredByAnnotationPopup && isContentEditable && value.length === 0);
 
   return ifReplyNotAllowed ? null : (
     <div
@@ -117,5 +124,9 @@ const ReplyArea = ({ annotation }) => {
 };
 
 ReplyArea.propTypes = propTypes;
+
+ReplyArea.defaultProps = {
+  setIsReplying: () => {},
+};
 
 export default ReplyArea;

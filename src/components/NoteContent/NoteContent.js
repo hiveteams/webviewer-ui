@@ -33,7 +33,7 @@ const propTypes = {
   annotation: PropTypes.object.isRequired,
 };
 
-const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
+const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex, setIsReplying  }) => {
   const [
     noteDateFormat,
     iconColor,
@@ -64,21 +64,30 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
       dispatch(actions.finishNoteEditing());
     }
 
+    setIsReplying(textAreaValue?.length > 0);
+
     resize();
-  }, [isEditing]);
+  }, [isEditing, textAreaValue]);
 
   useEffect(() => {
     // when the comment button in the annotation popup is clicked,
     // this effect will run and we set isEditing to true so that
     // the textarea will be rendered and focused after it is mounted
     if (
-      isNoteEditingTriggeredByAnnotationPopup &&
-      isSelected &&
-      isContentEditable
+      (isNoteEditingTriggeredByAnnotationPopup &&
+        isSelected &&
+        isContentEditable)
+      || (isContentEditable && textAreaValue?.length > 0)
     ) {
       setIsEditing(true, noteIndex);
     }
-  }, [isContentEditable, isNoteEditingTriggeredByAnnotationPopup, isSelected, setIsEditing]);
+  }, [isContentEditable, isNoteEditingTriggeredByAnnotationPopup, isSelected, textAreaValue, setIsEditing]);
+
+  useEffect(() => {
+    if (textAreaValue?.length > 0 && isContentEditable) {
+      setIsEditing(true, noteIndex);
+    }
+  }, [textAreaValue, isContentEditable, setIsEditing]);
 
   const renderAuthorName = useCallback(
     annotation => {
@@ -163,7 +172,7 @@ const NoteContent = ({ annotation, isEditing, setIsEditing, noteIndex }) => {
               />}
           </div>
         </div>
-        {isEditing && isSelected ? (
+        {((isEditing && isSelected) || isEditing && textAreaValue?.length > 0) ? (
           <ContentArea
             textAreaValue={textAreaValue}
             onTextAreaValueChange={setTextAreaValue}
